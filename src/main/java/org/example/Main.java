@@ -1,6 +1,7 @@
 package org.example;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Scanner;
 
 
 public class Main {
@@ -8,11 +9,13 @@ public class Main {
 
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+       // String filepath = "task.json";
 
-        String filepath = "task.json";
+        String accion = scanner.nextLine();
+        TaskManager.ManagerTask(accion);
 
-
-            JsonAllList(JsonExist(filepath));
+         //   JsonAllList(JsonExist(filepath));
 
     }
     private static StringBuilder JsonExist(String filepath){
