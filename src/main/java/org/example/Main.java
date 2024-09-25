@@ -1,10 +1,17 @@
 package org.example;
+import java.io.File;
 import java.util.Scanner;
+
+import static org.example.ManagerTask.CreateJson;
 
 
 public class Main {
 
     public static void main(String[] args) {
+        String filepath = "task.json";
+        boolean statusJson = CheckJson(filepath);
+
+        if (!statusJson) {CreateJson();statusJson = CheckJson(filepath);}
         Scanner scanner = new Scanner(System.in);
         String commando;
 
@@ -12,20 +19,27 @@ public class Main {
         while(true){
             System.out.println(">");
             commando = scanner.nextLine().trim();
-
-            if(commando.equalsIgnoreCase("exit")){
-                System.out.println("Exit...");
-                break;
-            } else if (commando.equalsIgnoreCase("help")) {
-                ListCommands(false);
-            }else if (commando.startsWith("task")) {
-                ListCommands(true);
-            }else if (commando.startsWith("add") || commando.startsWith("delete")||commando.startsWith("update")||commando.startsWith("list")){
-                ManagerTask.optionTask(commando);
+            switch (commando.toLowerCase()) {
+                case "exit":
+                    System.out.println("Exit...");
+                    return;
+                case "help":
+                    ListCommands(false);
+                    break;
+                case "task":
+                    ListCommands(true);
+                    break;
+                default:
+                    if (statusJson && (commando.startsWith("add") || commando.startsWith("delete") || commando.startsWith("update") || commando.startsWith("list"))) {
+                        ManagerTask.optionTask(commando, statusJson);
+                    }
+                    break;
             }
         }
 
     }
+
+    private static boolean CheckJson(String filepath) {return  new File(filepath).exists();}
 
     private static void ListCommands(boolean num) {
             System.out.println("Commands for Task ");
