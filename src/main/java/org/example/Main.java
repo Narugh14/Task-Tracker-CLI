@@ -31,7 +31,7 @@ public class Main {
                     break;
                 default:
                     if (statusJson && (commando.startsWith("add") || commando.startsWith("delete") || commando.startsWith("update") || commando.startsWith("list"))) {
-                        ManagerTask.optionTask(commando, statusJson);
+                        ManagerTask.optionTask(commando, statusJson, filepath);
                     }
                     break;
             }
