@@ -7,13 +7,19 @@ import java.util.Map;
 public class ManagerTask {
 
     static void optionTask(String commands, boolean statusJson, String filepath){
+        int init = commands.indexOf("\"") + 1;
+        int end = commands.indexOf("\"",init);
+        String task = commands.substring(init,end);
+
         if(!statusJson)
             CreateJson();
 
-        if(commands.startsWith("add"))
-            optionAdd(commands, filepath);
+        if(commands.startsWith("add")) {
+            optionAdd(task, jsonContent(filepath), filepath);
+        }
 
     }
+
     static void CreateJson(){
         //Create to Manual JSON
         StringBuilder jsonBuilder = new StringBuilder();
@@ -28,11 +34,7 @@ public class ManagerTask {
         }
     }
 
-    private static void optionAdd(String commands, String filepath) {
-        int init = commands.indexOf("\"") + 1;
-        int end = commands.indexOf("\"",init);
-        String task = commands.substring(init,end);
-
+    private static StringBuilder jsonContent(String filepath){
         File jsonFile = new File(filepath);
 
         StringBuilder jsonContent = new StringBuilder();
@@ -44,28 +46,38 @@ public class ManagerTask {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // Mostrar el contenido del JSON original
-        System.out.println("Contenido original del JSON:");
-        System.out.println(jsonContent);
+        return jsonContent;
+    }
 
+    private static void jsonSave(String filepath, String modifiedJson){
+        File jsonFile = new File(filepath);
+        try (FileWriter fileWriter = new FileWriter(jsonFile)) {
+            fileWriter.write(modifiedJson);
+            System.out.println("\nJSON modificado guardado correctamente.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void optionAdd(String task, StringBuilder jsonContent, String filepath) {
+        String AddTask;
+        String modifiedJson;
         String jsonAdd = jsonContent.toString();
-        int endJson = jsonAdd.indexOf("]");
-        if(jsonAdd.indexOf("]")-1 != jsonAdd.indexOf("]")){
-            System.out.println("El json esta Cosas hechas");
+        int initTask = jsonAdd.lastIndexOf("[");
+        int endTask = jsonAdd.lastIndexOf("]");
+        
+        //Enty list in-progress
+        if((initTask+1) == endTask) {
+        
+            AddTask = "{\" id\": 1, \" task\": \"" + task + "\", \"status\": \"in-progress\" }";
+            modifiedJson = jsonAdd.substring(0, endTask) + AddTask + jsonAdd.substring(endTask);
+            System.out.println(modifiedJson);
+            jsonSave(filepath, modifiedJson);
+        } else{
+            AddTask = ",{\" id\": 1, \" task\": \"" + task + "\", \"status\": \"in-progress\" }";
+            modifiedJson = jsonAdd.substring(0, endTask) + AddTask + jsonAdd.substring(endTask);
+            System.out.println(modifiedJson);
+            jsonSave(filepath, modifiedJson);
         }
-        if(jsonAdd.lastIndexOf("]")-1 != jsonAdd.lastIndexOf("]")){
-            System.out.println("El json esta en proceso");
-            int posicionArray = jsonAdd.lastIndexOf("]");
-
-            String Addjson = "{Texto ejemplo}";
-            String jsonActualizado = jsonAdd.substring(0, posicionArray) + Addjson + jsonAdd.substring(posicionArray );
-            System.out.println(jsonActualizado);
-        }
-
-
-       /* Map<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("id","");
-        jsonMap.put("task","");
-        jsonMap.put("status","done");*/
     }
 }
