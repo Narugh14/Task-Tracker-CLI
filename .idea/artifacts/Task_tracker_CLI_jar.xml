@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Task_tracker_CLI:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Task_tracker_CLI_jar</output-path>
+    <root id="archive" name="Task_tracker_CLI.jar">
+      <element id="module-output" name="Task_tracker_CLI" />
+    </root>
+  </artifact>
+</component>
