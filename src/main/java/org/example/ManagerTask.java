@@ -9,15 +9,19 @@ import java.util.Map;
 public class ManagerTask {
 
     static void optionTask(String commands, boolean statusJson, String filepath){
-        int init = commands.indexOf("\"") + 1;
-        int end = commands.indexOf("\"",init);
-        String task = commands.substring(init,end);
+
 
         if(!statusJson)
             CreateJson();
 
         if(commands.startsWith("add")) {
-            optionAdd(task, jsonContent(filepath), filepath);
+            int init = commands.indexOf("\"") + 1;
+            int end = commands.indexOf("\"",init);
+            String task = commands.substring(init,end);
+
+            option(task, jsonContent(filepath), filepath,"add");
+        }else if (commands.startsWith("delete")){
+            option(commands, jsonContent(filepath), filepath,"delete");
         }
 
     }
@@ -36,7 +40,7 @@ public class ManagerTask {
         }
     }
 
-    private static List<String> AllList(String json){
+    private static List<String> JsonToList(String json){
         List<String> listJson = new ArrayList<>();
         // Buscar la posición del array
 
@@ -60,6 +64,8 @@ public class ManagerTask {
         return listJson;
     }
 
+    private static  String ListToJson(List<String> list){return String.join(",",list);}
+
     private static StringBuilder jsonContent(String filepath){
         File jsonFile = new File(filepath);
 
@@ -79,13 +85,12 @@ public class ManagerTask {
         File jsonFile = new File(filepath);
         try (FileWriter fileWriter = new FileWriter(jsonFile)) {
             fileWriter.write(modifiedJson);
-            System.out.println("\nJSON modificado guardado correctamente.");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void optionAdd(String task, StringBuilder jsonContent, String filepath) {
+    private static void option(String task, StringBuilder jsonContent, String filepath, String option) {
         String AddTask;
         String modifiedJson;
         int maxId = 0;
@@ -100,8 +105,8 @@ public class ManagerTask {
             modifiedJson = jsonAdd.substring(0, endTask) + AddTask + jsonAdd.substring(endTask);
             System.out.println(modifiedJson);
             jsonSave(filepath, modifiedJson);
-        } else{
-            List<String> jsonList = AllList(jsonAdd);
+        } else if (option == "add"){
+            List<String> jsonList = JsonToList(jsonAdd);
              int MaxId = 0;
             for(int i = 0;i < jsonList.size() ; i++){
                 String item = jsonList.get(i);
@@ -117,6 +122,33 @@ public class ManagerTask {
             modifiedJson = jsonAdd.substring(0, endTask) + AddTask + jsonAdd.substring(endTask);
             System.out.println(modifiedJson);
             jsonSave(filepath, modifiedJson);
+        } else if (option == "delete") {
+
+            String IdStr = task.replace("delete","").trim();
+            int idTaskDelete = Integer.parseInt(IdStr);
+            List<String> jsonList = JsonToList(jsonAdd);
+            for(int i = 0;i < jsonList.size() ; i++){
+                String item = jsonList.get(i);
+                int start = item.indexOf("\"id\":");
+                int end = item.indexOf(",", start);
+                String idStr = item.substring(end-1,end).trim();
+                int id = Integer.parseInt(idStr);
+                if(id == idTaskDelete){
+                    jsonList.remove(i);
+                } else if(i == (jsonList.size()-1)){
+                    System.out.println("Id no exists");
+                    break;
+                }
+            }
+            String json = "";
+            if(!jsonList.isEmpty()) {
+                json = "[" + ListToJson(jsonList) + "]";
+                System.out.println(json);
+            }else{
+                json = "[]";
+                System.out.println("Json is Empty");
+            }
+            jsonSave(filepath, json);
         }
     }
 }
