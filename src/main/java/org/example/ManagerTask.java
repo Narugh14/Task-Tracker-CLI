@@ -157,7 +157,7 @@ public class ManagerTask {
         //Command Option is Update
         else if (option == "update") {
             List<String> jsonList = JsonToList(jsonAdd);
-
+            String json = "";
             String taskAndId = task.replace("update","");
             int startTaskID = taskAndId.indexOf("\"");
             int endTaskID = taskAndId.lastIndexOf("\"");
@@ -168,20 +168,20 @@ public class ManagerTask {
                 String item = jsonList.get(i);
                 int start = item.indexOf("\"id\":");
                 int end = item.indexOf(",", start);
-                int startTasks = item.indexOf("\"task\":");
+                int startTasks = item.indexOf("\" task\":");
                 int endTasks = item.indexOf(",", startTasks);
+                int startTask =item.indexOf(":", startTasks);
                 String idStr = item.substring(end-1,end).trim();
-                String TaskUpdate = item.substring(endTasks-1,endTasks).trim();
+                String TaskUpdate = item.substring(startTask+1,endTasks);
                 int id = Integer.parseInt(idStr);
                 if(id == IdUpdate){
-                    //necesito cambiar por una funcion que sirva
-                    // para remplazar
-                    // item.replace(TaskUpdate,CommandTask);
-                }else if(i == (jsonList.size()-1)){
-                    System.out.println("Id no exists");
-                    break;
+                   item = item.replaceFirst(TaskUpdate,"\""+CommandTask+"\"");
+                    jsonList.set(i,item);
                 }
             }
+            json = "[" + ListToJson(jsonList) + "]";
+            System.out.println(json);
+            jsonSave(filepath, json);
         }
     }
 }
