@@ -2,9 +2,7 @@ package org.example;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ManagerTask {
 
@@ -22,6 +20,8 @@ public class ManagerTask {
             option(task, jsonContent(filepath), filepath,"add");
         }else if (commands.startsWith("delete")){
             option(commands, jsonContent(filepath), filepath,"delete");
+        }else if (commands.startsWith("update")){
+            option(commands, jsonContent(filepath), filepath,"update");
         }
 
     }
@@ -105,7 +105,9 @@ public class ManagerTask {
             modifiedJson = jsonAdd.substring(0, endTask) + AddTask + jsonAdd.substring(endTask);
             System.out.println(modifiedJson);
             jsonSave(filepath, modifiedJson);
-        } else if (option == "add"){
+        }
+        //Command Option is add
+        else if (option == "add"){
             List<String> jsonList = JsonToList(jsonAdd);
              int MaxId = 0;
             for(int i = 0;i < jsonList.size() ; i++){
@@ -122,7 +124,9 @@ public class ManagerTask {
             modifiedJson = jsonAdd.substring(0, endTask) + AddTask + jsonAdd.substring(endTask);
             System.out.println(modifiedJson);
             jsonSave(filepath, modifiedJson);
-        } else if (option == "delete") {
+        }
+        //Commmand Option is delete
+        else if (option == "delete") {
 
             String IdStr = task.replace("delete","").trim();
             int idTaskDelete = Integer.parseInt(IdStr);
@@ -148,6 +152,35 @@ public class ManagerTask {
                 json = "[]";
                 System.out.println("Json is Empty");
             }
+            jsonSave(filepath, json);
+        }
+        //Command Option is Update
+        else if (option == "update") {
+            List<String> jsonList = JsonToList(jsonAdd);
+            String json = "";
+            String taskAndId = task.replace("update","");
+            int startTaskID = taskAndId.indexOf("\"");
+            int endTaskID = taskAndId.lastIndexOf("\"");
+            String CommandTask = taskAndId.substring(startTaskID+1, endTaskID);
+            String IDStr = taskAndId.replace("\""+CommandTask+"\"","").trim();
+            int IdUpdate = Integer.parseInt(IDStr);
+            for(int i = 0;i < jsonList.size() ; i++){
+                String item = jsonList.get(i);
+                int start = item.indexOf("\"id\":");
+                int end = item.indexOf(",", start);
+                int startTasks = item.indexOf("\" task\":");
+                int endTasks = item.indexOf(",", startTasks);
+                int startTask =item.indexOf(":", startTasks);
+                String idStr = item.substring(end-1,end).trim();
+                String TaskUpdate = item.substring(startTask+1,endTasks);
+                int id = Integer.parseInt(idStr);
+                if(id == IdUpdate){
+                   item = item.replaceFirst(TaskUpdate,"\""+CommandTask+"\"");
+                    jsonList.set(i,item);
+                }
+            }
+            json = "[" + ListToJson(jsonList) + "]";
+            System.out.println(json);
             jsonSave(filepath, json);
         }
     }
