@@ -1,10 +1,13 @@
 # Task Tracker
+
+Sample solution for the [task-tracker](https://roadmap.sh/projects/task-tracker) challenge from [roadmap.sh](https://roadmap.sh/).
+
 ## How to run
 
 Clone the repository and run the following command:
 
 ```bash
-git clone https://github.com/Narugh14/Task-Tracker-CLI.git
+git clone https://github.com/arikchakma/backend-projects.git
 cd backend-projects/task-tracker
 ```
 
@@ -31,5 +34,6 @@ go build -o task-tracker
 # To list all tasks
 ./task-tracker list
 ./task-tracker list done
+./task-tracker list todo
 ./task-tracker list in-progress
 ```
