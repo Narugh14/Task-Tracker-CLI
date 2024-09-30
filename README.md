@@ -1,2 +1,35 @@
-# Task-Tracker-CLI
- Task tracker is a project used to track and manage your tasks. In this task, you will build a simple command line interface (CLI) to track what you need to do, what you have done, and what you are currently working on. This project will help you practice your programming skills, including working with the filesystem, handling user inputs, and building a simple CLI application.
+# Task Tracker
+## How to run
+
+Clone the repository and run the following command:
+
+```bash
+git clone https://github.com/Narugh14/Task-Tracker-CLI.git
+cd backend-projects/task-tracker
+```
+
+Run the following command to build and run the project:
+
+```bash
+go build -o task-tracker
+./task-tracker --help # To see the list of available commands
+
+# To add a task
+./task-tracker add "Buy groceries"
+
+# To update a task
+./task-tracker update 1 "Buy groceries and cook dinner"
+
+# To delete a task
+./task-tracker delete 1
+
+# To mark a task as in progress/done/todo
+./task-tracker mark-in-progress 1
+./task-tracker mark-done 1
+./task-tracker mark-todo 1
+
+# To list all tasks
+./task-tracker list
+./task-tracker list done
+./task-tracker list in-progress
+```
